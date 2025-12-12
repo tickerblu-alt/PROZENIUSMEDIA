@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProZenius Media - Brand Films & DDM</title>
+    <meta name="description" content="₹1999 Brand Films that convert 450% better. DARK DNA MARKETING (DDM). ProZenius Framework for billion-scale brands.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              noto: ['Noto Sans Devanagari', 'sans-serif'],
+            },
+            colors: {
+              gold: {
+                50: '#FCF9EE',
+                100: '#F7EFC8',
+                200: '#EFDB8C',
+                300: '#E6C254',
+                400: '#DDAA24',
+                500: '#C69214',
+                600: '#A6730E',
+                700: '#85570E',
+                800: '#6E4613',
+                900: '#5B3B15',
+                950: '#352008',
+              },
+              navy: {
+                900: '#020418', 
+                800: '#0a0e35', 
+              },
+              brand: {
+                50: '#eff6ff',
+                100: '#dbeafe',
+                500: '#3b82f6',
+                600: '#2563eb',
+                700: '#1d4ed8',
+                800: '#1e40af',
+                900: '#1e3a8a',
+              }
+            },
+            boxShadow: {
+              '3d': '0 10px 0px 0px rgba(166, 115, 14, 1), 0 10px 20px rgba(0,0,0,0.2)',
+              '3d-light': '0 6px 0px 0px rgba(221, 170, 36, 0.5), 0 10px 15px rgba(0,0,0,0.1)',
+              'inner-glow': 'inset 0 0 20px rgba(255, 255, 255, 0.3)',
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'fade-in': 'fadeIn 0.5s ease-out forwards',
+              'fade-in-down': 'fadeInDown 0.8s ease-out forwards',
+              'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              fadeInDown: {
+                '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              fadeInUp: {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+      html { scroll-behavior: smooth; }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      }
+      .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      }
+      .gold-gradient-text {
+        background: linear-gradient(to right, #F7EFC8, #DDAA24, #F7EFC8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% auto;
+        animation: shine 3s linear infinite;
+      }
+      @keyframes shine {
+        to {
+          background-position: 200% center;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.10.1"
+  }
+}
+</script>
+</head>
+  <body class="bg-gold-50 text-slate-900 font-sans antialiased">
+    <div id="root"></div>
+  </body>
+</html>
