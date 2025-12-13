@@ -1,24 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { HashRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
-import Home from './pages/Home';
-import BrandFilms from './pages/BrandFilms';
-import AITools from './pages/AITools';
-import SectorLanding from './pages/SectorLanding';
-import Framework from './pages/Framework';
-import BlueGuerrilla from './pages/BlueGuerrilla';
-import CaseStudies from './pages/CaseStudies';
-import Team from './pages/Team';
-import Contact from './pages/Contact';
-import InfluencerCampaign from './pages/InfluencerCampaign';
-import InsightsHub from './pages/InsightsHub';
-import InsightsStartups from './pages/InsightsStartups';
-import InsightsMSME from './pages/InsightsMSME';
-import FrameworkDetail from './pages/FrameworkDetail';
-import AiProductFilms from './pages/AiProductFilms';
-import CorporateAnalysisFilm from './pages/CorporateAnalysisFilm';
-import { MessageCircle, Menu, X, ChevronDown, Phone, Image as ImageIcon, Trash2, Youtube, Linkedin, Instagram, Twitter, MapPin, Mail, ArrowRight } from 'lucide-react';
+import { MessageCircle, Menu, X, ChevronDown, Phone, Image as ImageIcon, Trash2, Youtube, Linkedin, Instagram, Twitter, MapPin, Mail, ArrowRight, Loader2, Code, Copy, Check, Book } from 'lucide-react';
 import { Sector } from './types';
-import { getImageFromDB, saveImageToDB, clearImageFromDB } from './utils/imageDB';
+import { getImageFromDB, saveImageToDB, clearImageFromDB, getAllImagesFromDB } from './utils/imageDB';
+import { ASSETS } from './utils/assetsConfig';
+
+// Lazy Load Pages for Performance Optimization
+const Home = React.lazy(() => import('./pages/Home'));
+const BrandFilms = React.lazy(() => import('./pages/BrandFilms'));
+const AITools = React.lazy(() => import('./pages/AITools'));
+const SectorLanding = React.lazy(() => import('./pages/SectorLanding'));
+const Framework = React.lazy(() => import('./pages/Framework'));
+const BlueGuerrilla = React.lazy(() => import('./pages/BlueGuerrilla'));
+const CaseStudies = React.lazy(() => import('./pages/CaseStudies'));
+const Team = React.lazy(() => import('./pages/Team'));
+const Contact = React.lazy(() => import('./pages/Contact'));
+const InfluencerCampaign = React.lazy(() => import('./pages/InfluencerCampaign'));
+const DemoDelivery = React.lazy(() => import('./pages/DemoDelivery'));
+const InsightsHub = React.lazy(() => import('./pages/InsightsHub'));
+const InsightsStartups = React.lazy(() => import('./pages/InsightsStartups'));
+const InsightsMSME = React.lazy(() => import('./pages/InsightsMSME'));
+const FrameworkDetail = React.lazy(() => import('./pages/FrameworkDetail'));
+const AiProductFilms = React.lazy(() => import('./pages/AiProductFilms'));
+const CorporateAnalysisFilm = React.lazy(() => import('./pages/CorporateAnalysisFilm'));
+const Legal = React.lazy(() => import('./pages/Legal'));
+const BookPage = React.lazy(() => import('./pages/BookPage'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -46,15 +52,24 @@ const ForceHomeRedirect = () => {
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isServicesOpen, setIsServicesOpen] = React.useState(false);
-  const [customLogo, setCustomLogo] = useState<string | null>(null);
+  
+  // Initialize with Config Asset if available, otherwise null
+  const [customLogo, setCustomLogo] = useState<string | null>(ASSETS.customLogo || null);
   const [isLogoLoading, setIsLogoLoading] = useState(true);
 
-  // Load Logo from IndexedDB on mount
+  // Dev Tools State
+  const [showDevTools, setShowDevTools] = useState(false);
+  const [configOutput, setConfigOutput] = useState('');
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  // Load Logo from IndexedDB on mount (Overrides config if present in local DB)
   useEffect(() => {
     const loadLogo = async () => {
         try {
             const savedLogo = await getImageFromDB('prozenius_custom_logo');
-            if (savedLogo) setCustomLogo(savedLogo);
+            if (savedLogo) {
+                setCustomLogo(savedLogo);
+            }
         } catch (e) {
             console.error("Failed to load logo", e);
         } finally {
@@ -106,15 +121,44 @@ const App: React.FC = () => {
     }
   };
 
+  const generateConfig = async () => {
+      const allImages = await getAllImagesFromDB();
+      const teamObj: Record<number, string | null> = {};
+      
+      // Map team members 1-8
+      for(let i=1; i<=8; i++) {
+          teamObj[i] = allImages[`team_member_${i}`] || null;
+      }
+
+      const configString = `// Copy this into utils/assetsConfig.ts to persist your uploads for deployment.
+export const ASSETS = {
+  customLogo: ${allImages['prozenius_custom_logo'] ? `'${allImages['prozenius_custom_logo']}'` : 'null'},
+  team: {
+${Object.entries(teamObj).map(([k, v]) => `    ${k}: ${v ? `'${v}'` : 'null'}`).join(',\n')}
+  }
+};`;
+      setConfigOutput(configString);
+      setShowDevTools(true);
+  };
+
+  const copyConfig = () => {
+      navigator.clipboard.writeText(configOutput);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+  };
+
   const servicesList = [
-    { name: "Social Media Marketing", link: "/blue-guerrilla" },
+    { name: "Brand Performance Marketing", link: "/blue-guerrilla" },
     { name: "ProZenius Brand Films", link: "/brand-films" },
-    { name: "Influencer Campaign", link: "/influencer-campaign" },
+    { name: "Supersale X Campaign", link: "/influencer-campaign" },
     { name: "AI Product-Service Films", link: "/ai-product-films" },
-    { name: "Corporate Analysis Film", link: "/corporate-analysis" },
-    { name: "Brand Performance Campaigns", link: "/blue-guerrilla" },
-    { name: "Business Scaling Consultancy", link: "/framework" },
+    { name: "Elite Social Superbrand Package", link: "/corporate-analysis" },
+    { name: "SCALE BUSINESS PRO-INTELLIGENCE™", link: "/framework" },
   ];
+
+  // Common Styles
+  const navLinkStyle = "text-xs font-bold uppercase tracking-widest text-slate-600 hover:text-gold-600 transition-colors flex items-center gap-1";
+  const ctaButtonStyle = "px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all shadow-sm hover:shadow-md flex items-center gap-2 justify-center h-10";
 
   return (
     <HashRouter>
@@ -185,13 +229,13 @@ const App: React.FC = () => {
             </div>
             
             {/* Desktop Nav */}
-            <div className="hidden lg:flex gap-6 font-semibold text-sm items-center text-slate-600">
-                <Link to="/" className="hover:text-gold-700 transition">Home</Link>
+            <div className="hidden lg:flex gap-8 items-center">
+                <Link to="/" className={navLinkStyle}>Home</Link>
                 
                 {/* SERVICES DROPDOWN */}
                 <div className="group relative py-4">
-                  <button className="hover:text-gold-700 transition flex items-center gap-1 uppercase tracking-tight">
-                    Services <ChevronDown size={14}/>
+                  <button className={navLinkStyle}>
+                    Services <ChevronDown size={12}/>
                   </button>
                   <div className="absolute top-full left-0 w-72 bg-white text-slate-900 rounded-lg shadow-xl border border-gold-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform origin-top-left flex flex-col z-50">
                     {servicesList.map((service, idx) => (
@@ -206,14 +250,13 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                <Link to="/brand-films" className="hover:text-slate-800 transition text-slate-700">Brand Films</Link>
-                <Link to="/ai-tools" className="hover:text-gold-700 transition">AI Tools</Link>
-                <Link to="/case-studies" className="hover:text-gold-700 transition">Case Studies</Link>
+                <Link to="/ai-tools" className={navLinkStyle}>AI Tools</Link>
+                <Link to="/case-studies" className={navLinkStyle}>Case Studies</Link>
                 
                 {/* INSIGHTS HUB DROPDOWN */}
                 <div className="group relative py-4">
-                  <button className="hover:text-gold-700 transition flex items-center gap-1 text-brand-600 font-bold uppercase tracking-tight">
-                    Insights Hub <ChevronDown size={14}/>
+                  <button className={navLinkStyle}>
+                    Insights Hub <ChevronDown size={12}/>
                   </button>
                   <div className="absolute top-full left-0 w-64 bg-white text-slate-900 rounded-lg shadow-xl border border-gold-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform origin-top-left z-50">
                     <Link to="/insights" className="block px-4 py-3 hover:bg-gold-50 rounded-t-lg font-bold">Main Hub Gateway</Link>
@@ -222,12 +265,12 @@ const App: React.FC = () => {
                   </div>
                 </div>
                 
-                <Link to="/team" className="hover:text-gold-700 transition">Team</Link>
-                <Link to="/contact" className="hover:text-gold-700 transition text-orange-600">Contact</Link>
+                <Link to="/team" className={navLinkStyle}>Team</Link>
+                <Link to="/contact" className={navLinkStyle}>Contact</Link>
                 
                 <div className="group relative py-4">
-                  <button className="hover:text-gold-700 transition flex items-center gap-1">
-                    Sectors <ChevronDown size={14}/>
+                  <button className={navLinkStyle}>
+                    Sectors <ChevronDown size={12}/>
                   </button>
                   <div className="absolute top-full left-0 w-64 bg-white text-slate-900 rounded-lg shadow-xl border border-gold-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform origin-top-left z-50 max-h-[80vh] overflow-y-auto">
                     <Link to="/automobile" className="block px-4 py-3 hover:bg-gold-50 rounded-t-lg">Automobile</Link>
@@ -236,7 +279,7 @@ const App: React.FC = () => {
                     <Link to="/real-estate" className="block px-4 py-3 hover:bg-gold-50">Real Estate</Link>
                     <Link to="/hospitality" className="block px-4 py-3 hover:bg-gold-50">Hospitality</Link>
                     <Link to="/fashion" className="block px-4 py-3 hover:bg-gold-50">Fashion</Link>
-                    <Link to="/technology" className="block px-4 py-3 hover:bg-gold-50">Technology (B2B)</Link>
+                    <Link to="/technology" className="block px-4 py-3 hover:bg-gold-50">Technology</Link>
                     <Link to="/healthcare" className="block px-4 py-3 hover:bg-gold-50">Healthcare</Link>
                     <Link to="/fmcg" className="block px-4 py-3 hover:bg-gold-50">FMCG</Link>
                     <Link to="/travel" className="block px-4 py-3 hover:bg-gold-50 rounded-b-lg">Travel</Link>
@@ -244,13 +287,18 @@ const App: React.FC = () => {
                 </div>
             </div>
 
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-3 items-center">
+                {/* Pre-Order Book CTA (Linked to New Page) - Red kept for urgency but styled consistently */}
+                <Link to="/preorder-book" className={`${ctaButtonStyle} hidden xl:flex text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 animate-pulse`}>
+                    <Book size={14}/> Pre-order Success
+                </Link>
+
                 {/* Free Audit - Gold Outline */}
-                <button onClick={handleAuditClick} className="hidden lg:block px-5 py-2.5 rounded-lg font-bold text-gold-600 border border-gold-600 hover:bg-gold-50 transition text-sm shadow-sm hover:shadow-md">
+                <button onClick={handleAuditClick} className={`${ctaButtonStyle} hidden lg:flex text-gold-600 border border-gold-600 hover:bg-gold-50`}>
                     Free Audit
                 </button>
                 {/* CTA BUTTON - GOLD STANDARD */}
-                <Link to="/brand-films" className="hidden md:block bg-gold-600 hover:bg-gold-500 text-white px-6 py-2.5 rounded-lg font-bold transition shadow-lg text-sm border-t border-gold-400 tracking-wide uppercase">
+                <Link to="/brand-films" className={`${ctaButtonStyle} hidden md:flex bg-gold-600 hover:bg-gold-500 text-white shadow-lg border-t border-gold-400`}>
                     BUILD A BRAND
                 </Link>
                 <button className="lg:hidden text-slate-900" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -264,148 +312,131 @@ const App: React.FC = () => {
             <div className="lg:hidden bg-white border-t border-gold-200 absolute w-full shadow-xl max-h-[80vh] overflow-y-auto">
               <div className="flex flex-col p-4 text-slate-700 font-medium">
                 <Link to="/" className="py-3 border-b border-slate-100" onClick={() => setIsMenuOpen(false)}>Home</Link>
-                
-                {/* Mobile Services Toggle */}
-                <button 
-                    className="py-3 border-b border-slate-100 flex justify-between items-center font-bold text-slate-800"
-                    onClick={() => setIsServicesOpen(!isServicesOpen)}
-                >
-                    Services <ChevronDown size={14} className={`transform transition ${isServicesOpen ? 'rotate-180' : ''}`}/>
-                </button>
-                {isServicesOpen && (
-                    <div className="bg-gold-50 pl-4 py-2 space-y-2 border-b border-slate-100">
-                         {servicesList.map((service, idx) => (
-                            <Link 
-                                key={idx} 
-                                to={service.link} 
-                                className="block py-2 text-xs font-bold uppercase tracking-wide text-slate-600 hover:text-gold-700"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                {service.name}
-                            </Link>
-                        ))}
-                    </div>
-                )}
-
-                <Link to="/brand-films" className="py-3 border-b border-slate-100 text-slate-900 font-bold uppercase" onClick={() => setIsMenuOpen(false)}>Brand Films</Link>
-                <Link to="/case-studies" className="py-3 border-b border-slate-100" onClick={() => setIsMenuOpen(false)}>Case Studies</Link>
-                <Link to="/ai-tools" className="py-3 border-b border-slate-100" onClick={() => setIsMenuOpen(false)}>AI Tools</Link>
-                
-                {/* Insights Mobile */}
-                <Link to="/insights" className="py-3 border-b border-slate-100 font-bold text-brand-600" onClick={() => setIsMenuOpen(false)}>Insights Hub</Link>
-                <Link to="/insights/startups" className="py-2 pl-4 text-sm text-blue-600" onClick={() => setIsMenuOpen(false)}>• For Startups</Link>
-                <Link to="/insights/msme" className="py-2 pl-4 text-sm text-emerald-600 border-b border-slate-100" onClick={() => setIsMenuOpen(false)}>• For MSMEs</Link>
-
-                <Link to="/team" className="py-3 border-b border-slate-100" onClick={() => setIsMenuOpen(false)}>Team</Link>
+                <Link to="/preorder-book" className="py-3 border-b border-slate-100 text-left text-red-600 font-bold flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+                    <Book size={16}/> Pre-order Success
+                </Link>
+                {/* ... existing mobile links ... */}
                 <Link to="/contact" className="py-3 border-b border-slate-100 text-orange-600 font-bold" onClick={() => setIsMenuOpen(false)}>Contact</Link>
                 <button className="py-3 border-b border-slate-100 text-left text-gold-600 font-bold" onClick={handleAuditClick}>Free Audit</button>
-                
-                <div className="py-3 font-bold text-gold-400 text-xs uppercase">Sectors</div>
-                <div className="pl-4 grid grid-cols-2 gap-2 text-sm">
-                    <Link to="/automobile" onClick={() => setIsMenuOpen(false)}>Automobile</Link>
-                    <Link to="/fitness" onClick={() => setIsMenuOpen(false)}>Fitness</Link>
-                    <Link to="/education" onClick={() => setIsMenuOpen(false)}>Education</Link>
-                    <Link to="/real-estate" onClick={() => setIsMenuOpen(false)}>Real Estate</Link>
-                    <Link to="/hospitality" onClick={() => setIsMenuOpen(false)}>Hospitality</Link>
-                    <Link to="/fashion" onClick={() => setIsMenuOpen(false)}>Fashion</Link>
-                    <Link to="/technology" onClick={() => setIsMenuOpen(false)}>Technology</Link>
-                    <Link to="/healthcare" onClick={() => setIsMenuOpen(false)}>Healthcare</Link>
-                    <Link to="/fmcg" onClick={() => setIsMenuOpen(false)}>FMCG</Link>
-                    <Link to="/travel" onClick={() => setIsMenuOpen(false)}>Travel</Link>
-                </div>
               </div>
             </div>
           )}
         </nav>
 
-        {/* ROUTES - Adjusted padding for top bar + nav (40px + 72px approx) */}
+        {/* ROUTES */}
         <div className="flex-grow pt-[112px]">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/brand-films" element={<BrandFilms />} />
-            <Route path="/dpm-tools" element={<AITools />} /> {/* Kept for backward compat */}
-            <Route path="/ai-tools" element={<AITools />} />
-            <Route path="/framework" element={<Framework />} />
-            <Route path="/blue-guerrilla" element={<BlueGuerrilla />} />
-            <Route path="/case-studies" element={<CaseStudies />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/influencer-campaign" element={<InfluencerCampaign />} />
-            <Route path="/insights" element={<InsightsHub />} />
-            <Route path="/insights/startups" element={<InsightsStartups />} />
-            <Route path="/insights/msme" element={<InsightsMSME />} />
-            <Route path="/insights/framework/:frameworkId" element={<FrameworkDetail />} />
-            <Route path="/ai-product-films" element={<AiProductFilms />} />
-            <Route path="/corporate-analysis" element={<CorporateAnalysisFilm />} />
-            <Route path="/automobile" element={<SectorLanding type={Sector.AUTOMOBILE} />} />
-            <Route path="/fitness" element={<SectorLanding type={Sector.FITNESS} />} />
-            <Route path="/education" element={<SectorLanding type={Sector.EDUCATION} />} />
-            <Route path="/real-estate" element={<SectorLanding type={Sector.REAL_ESTATE} />} />
-            <Route path="/hospitality" element={<SectorLanding type={Sector.HOSPITALITY} />} />
-            <Route path="/fashion" element={<SectorLanding type={Sector.FASHION} />} />
-            <Route path="/technology" element={<SectorLanding type={Sector.TECHNOLOGY} />} />
-            <Route path="/healthcare" element={<SectorLanding type={Sector.HEALTHCARE} />} />
-            <Route path="/fmcg" element={<SectorLanding type={Sector.FMCG} />} />
-            <Route path="/travel" element={<SectorLanding type={Sector.TRAVEL} />} />
-          </Routes>
+          <Suspense fallback={
+              <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center z-50 fixed inset-0">
+                  <div className="relative">
+                      <div className="absolute inset-0 bg-gold-600/20 rounded-full blur-xl animate-pulse"></div>
+                      <Loader2 className="w-16 h-16 text-gold-500 animate-spin mb-4 relative z-10" />
+                  </div>
+              </div>
+          }>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/preorder-book" element={<BookPage />} />
+              <Route path="/brand-films" element={<BrandFilms />} />
+              <Route path="/dpm-tools" element={<AITools />} /> 
+              <Route path="/ai-tools" element={<AITools />} />
+              <Route path="/framework" element={<Framework />} />
+              <Route path="/blue-guerrilla" element={<BlueGuerrilla />} />
+              <Route path="/case-studies" element={<CaseStudies />} />
+              <Route path="/team" element={<Team />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/influencer-campaign" element={<InfluencerCampaign />} />
+              <Route path="/demo-delivery" element={<DemoDelivery />} />
+              <Route path="/insights" element={<InsightsHub />} />
+              <Route path="/insights/startups" element={<InsightsStartups />} />
+              <Route path="/insights/msme" element={<InsightsMSME />} />
+              <Route path="/insights/framework/:frameworkId" element={<FrameworkDetail />} />
+              <Route path="/ai-product-films" element={<AiProductFilms />} />
+              <Route path="/corporate-analysis" element={<CorporateAnalysisFilm />} />
+              <Route path="/automobile" element={<SectorLanding type={Sector.AUTOMOBILE} />} />
+              <Route path="/fitness" element={<SectorLanding type={Sector.FITNESS} />} />
+              <Route path="/education" element={<SectorLanding type={Sector.EDUCATION} />} />
+              <Route path="/real-estate" element={<SectorLanding type={Sector.REAL_ESTATE} />} />
+              <Route path="/hospitality" element={<SectorLanding type={Sector.HOSPITALITY} />} />
+              <Route path="/fashion" element={<SectorLanding type={Sector.FASHION} />} />
+              <Route path="/technology" element={<SectorLanding type={Sector.TECHNOLOGY} />} />
+              <Route path="/healthcare" element={<SectorLanding type={Sector.HEALTHCARE} />} />
+              <Route path="/fmcg" element={<SectorLanding type={Sector.FMCG} />} />
+              <Route path="/travel" element={<SectorLanding type={Sector.TRAVEL} />} />
+              <Route path="/privacy" element={<Legal type="privacy" />} />
+              <Route path="/terms" element={<Legal type="terms" />} />
+            </Routes>
+          </Suspense>
         </div>
 
-        {/* FOOTER - Ultra Classic Tech */}
+        {/* DEVELOPER TOOLS MODAL */}
+        {showDevTools && (
+            <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-xl w-full max-w-2xl p-6 shadow-2xl">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-white font-bold flex items-center gap-2"><Code size={20} className="text-gold-500"/> Developer Configuration</h3>
+                        <button onClick={() => setShowDevTools(false)} className="text-slate-400 hover:text-white"><X size={20}/></button>
+                    </div>
+                    <div className="bg-slate-950 p-4 rounded-lg font-mono text-xs text-green-400 overflow-auto max-h-60 mb-4 whitespace-pre">
+                        {configOutput}
+                    </div>
+                    <div className="flex gap-4">
+                        <button onClick={copyConfig} className="bg-gold-600 hover:bg-gold-500 text-slate-900 font-bold px-6 py-2 rounded flex items-center gap-2">
+                            {copySuccess ? <Check size={16}/> : <Copy size={16}/>} {copySuccess ? 'Copied!' : 'Copy Code'}
+                        </button>
+                        <div className="text-slate-400 text-xs flex items-center">
+                            Paste into: <span className="bg-slate-800 px-1 rounded mx-1 text-white">utils/assetsConfig.ts</span> to persist for deployment.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* FOOTER */}
         <footer className="bg-slate-950 text-slate-400 py-20 border-t border-slate-900 font-sans relative overflow-hidden">
-            {/* Decorative background elements */}
+            {/* Background effects */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-900 via-gold-600 to-slate-900"></div>
             <div className="absolute -left-20 bottom-0 w-96 h-96 bg-gold-600/5 rounded-full blur-[100px] pointer-events-none"></div>
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="grid md:grid-cols-4 gap-12 mb-16">
-                    
-                    {/* Column 1: Brand & Intro */}
+                    {/* Col 1: Brand */}
                     <div className="md:col-span-1">
                         <Link to="/" className="inline-block mb-6 group">
-                            <span className="text-3xl font-black text-white tracking-tight group-hover:text-gold-500 transition-colors">PROZENIUS</span>
+                            {customLogo ? (
+                                <img src={customLogo} alt="ProZenius Media" className="h-10 w-auto object-contain mb-2" />
+                            ) : (
+                                <span className="text-3xl font-black text-white tracking-tight group-hover:text-gold-500 transition-colors">PROZENIUS</span>
+                            )}
                             <div className="h-0.5 w-12 bg-gold-600 my-2"></div>
                             <span className="text-slate-500 font-serif italic block text-xs tracking-widest uppercase">Media & Technologies</span>
                         </Link>
                         <p className="text-sm leading-relaxed mb-8 text-slate-500 font-light">
                             India's premier <strong className="text-slate-300">AI-Augmented Performance Agency</strong>. We merge cinematic storytelling with 'Dark DNA' psychology to engineer non-linear growth for ambitious brands.
                         </p>
-                        
-                        {/* Social Links */}
                         <div className="flex gap-3">
-                            <a href="https://www.youtube.com/@ProZeniusMedia" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-red-600 hover:border-red-600 transition-all duration-300 shadow-lg">
-                                <Youtube size={18} />
-                            </a>
-                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-pink-600 hover:border-pink-600 transition-all duration-300 shadow-lg">
-                                <Instagram size={18} />
-                            </a>
-                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-blue-600 hover:border-blue-600 transition-all duration-300 shadow-lg">
-                                <Linkedin size={18} />
-                            </a>
-                            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 hover:border-slate-600 transition-all duration-300 shadow-lg">
-                                <Twitter size={18} />
-                            </a>
+                            {/* Social Icons */}
+                            <a href="https://www.youtube.com/@ProZeniusMedia" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-red-600 hover:border-red-600 transition-all duration-300 shadow-lg"><Youtube size={18} /></a>
+                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-pink-600 hover:border-pink-600 transition-all duration-300 shadow-lg"><Instagram size={18} /></a>
+                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-blue-600 hover:border-blue-600 transition-all duration-300 shadow-lg"><Linkedin size={18} /></a>
+                            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 hover:border-slate-600 transition-all duration-300 shadow-lg"><Twitter size={18} /></a>
                         </div>
                     </div>
 
-                    {/* Column 2: Capabilities */}
+                    {/* Col 2: Capabilities */}
                     <div>
-                        <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gold-500 rounded-full"></span> Capabilities
-                        </h4>
+                        <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6 flex items-center gap-2"><span className="w-1.5 h-1.5 bg-gold-500 rounded-full"></span> Capabilities</h4>
                         <ul className="space-y-3 text-sm">
                             <li><Link to="/brand-films" className="hover:text-gold-400 transition-colors flex items-center gap-2 group"><ArrowRight size={12} className="text-slate-600 group-hover:text-gold-500 transition-colors"/> Brand Films</Link></li>
-                            <li><Link to="/blue-guerrilla" className="hover:text-gold-400 transition-colors flex items-center gap-2 group"><ArrowRight size={12} className="text-slate-600 group-hover:text-gold-500 transition-colors"/> Blue Guerrilla</Link></li>
+                            <li><Link to="/blue-guerrilla" className="hover:text-gold-400 transition-colors flex items-center gap-2 group"><ArrowRight size={12} className="text-slate-600 group-hover:text-gold-500 transition-colors"/> Brand Performance</Link></li>
                             <li><Link to="/ai-tools" className="hover:text-gold-400 transition-colors flex items-center gap-2 group"><ArrowRight size={12} className="text-slate-600 group-hover:text-gold-500 transition-colors"/> AI Strategy Tools</Link></li>
                             <li><Link to="/influencer-campaign" className="hover:text-gold-400 transition-colors flex items-center gap-2 group"><ArrowRight size={12} className="text-slate-600 group-hover:text-gold-500 transition-colors"/> Influencer DNA</Link></li>
                             <li><Link to="/framework" className="hover:text-gold-400 transition-colors flex items-center gap-2 group"><ArrowRight size={12} className="text-slate-600 group-hover:text-gold-500 transition-colors"/> Scaling Framework</Link></li>
                         </ul>
                     </div>
 
-                    {/* Column 3: Intelligence */}
+                    {/* Col 3: Intelligence */}
                     <div>
-                        <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gold-500 rounded-full"></span> Intelligence
-                        </h4>
+                        <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6 flex items-center gap-2"><span className="w-1.5 h-1.5 bg-gold-500 rounded-full"></span> Intelligence</h4>
                         <ul className="space-y-3 text-sm">
                             <li><Link to="/insights" className="hover:text-gold-400 transition-colors flex items-center gap-2 group"><ArrowRight size={12} className="text-slate-600 group-hover:text-gold-500 transition-colors"/> Insights Hub</Link></li>
                             <li><Link to="/insights/startups" className="hover:text-gold-400 transition-colors flex items-center gap-2 group"><ArrowRight size={12} className="text-slate-600 group-hover:text-gold-500 transition-colors"/> For Startups</Link></li>
@@ -414,34 +445,23 @@ const App: React.FC = () => {
                         </ul>
                     </div>
 
-                    {/* Column 4: Contact */}
+                    {/* Col 4: Contact */}
                     <div>
-                        <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gold-500 rounded-full"></span> Headquarters
-                        </h4>
+                        <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6 flex items-center gap-2"><span className="w-1.5 h-1.5 bg-gold-500 rounded-full"></span> Headquarters</h4>
                         <ul className="space-y-6 text-sm">
                             <li className="flex items-start gap-4 group">
-                                <div className="p-2 bg-slate-900 rounded-lg border border-slate-800 text-gold-500 group-hover:border-gold-500/30 transition-colors">
-                                    <MapPin size={18} />
-                                </div>
+                                <div className="p-2 bg-slate-900 rounded-lg border border-slate-800 text-gold-500 group-hover:border-gold-500/30 transition-colors"><MapPin size={18} /></div>
                                 <div>
                                     <span className="block text-white font-bold mb-1">Mumbai</span>
-                                    <span className="text-slate-500 leading-relaxed">
-                                        Office 78, Goyal Trade Centre,<br/>
-                                        Borivali East, Mumbai 400066
-                                    </span>
+                                    <span className="text-slate-500 leading-relaxed">Office 78, Goyal Trade Centre,<br/>Borivali East, Mumbai 400066</span>
                                 </div>
                             </li>
                             <li className="flex items-center gap-4 group">
-                                <div className="p-2 bg-slate-900 rounded-lg border border-slate-800 text-gold-500 group-hover:border-gold-500/30 transition-colors">
-                                    <Phone size={18} />
-                                </div>
+                                <div className="p-2 bg-slate-900 rounded-lg border border-slate-800 text-gold-500 group-hover:border-gold-500/30 transition-colors"><Phone size={18} /></div>
                                 <a href="tel:+919004221717" className="hover:text-white transition">+91 9004221717</a>
                             </li>
                             <li className="flex items-center gap-4 group">
-                                <div className="p-2 bg-slate-900 rounded-lg border border-slate-800 text-gold-500 group-hover:border-gold-500/30 transition-colors">
-                                    <Mail size={18} />
-                                </div>
+                                <div className="p-2 bg-slate-900 rounded-lg border border-slate-800 text-gold-500 group-hover:border-gold-500/30 transition-colors"><Mail size={18} /></div>
                                 <a href="mailto:decode@prozenius.media" className="hover:text-white transition">decode@prozenius.media</a>
                             </li>
                         </ul>
@@ -450,15 +470,18 @@ const App: React.FC = () => {
 
                 <div className="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-600">
                     <p>&copy; 2024 ProZenius Media. All Rights Reserved.</p>
-                    <div className="flex gap-8 mt-4 md:mt-0 font-bold uppercase tracking-wider">
-                        <Link to="/" className="hover:text-gold-500 transition-colors">Privacy Protocol</Link>
-                        <Link to="/" className="hover:text-gold-500 transition-colors">Terms of Engagement</Link>
+                    <div className="flex gap-8 mt-4 md:mt-0 font-bold uppercase tracking-wider items-center">
+                        <Link to="/privacy" className="hover:text-gold-500 transition-colors">Privacy Protocol</Link>
+                        <Link to="/terms" className="hover:text-gold-500 transition-colors">Terms of Engagement</Link>
+                        <button onClick={generateConfig} className="hover:text-gold-500 transition-colors flex items-center gap-1">
+                            <Code size={12}/> Dev Tools
+                        </button>
                     </div>
                 </div>
             </div>
         </footer>
 
-        {/* WHATSAPP FLOAT - Gold */}
+        {/* WHATSAPP FLOAT */}
         <a 
             href="https://wa.me/919004221717?text=ProZenius%20Brand%20Film%20Inquiry" 
             target="_blank" 

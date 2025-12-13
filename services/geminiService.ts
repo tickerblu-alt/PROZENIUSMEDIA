@@ -72,6 +72,42 @@ export const generateDPMAudit = async (
   }
 };
 
+export const generateDarkDNAAnalysis = async (url: string): Promise<string> => {
+  try {
+    const ai = getAI();
+    const prompt = `
+      Analyze the brand potential for the website/url: ${url}.
+      (Infer the industry and brand voice if the URL is generic).
+
+      Perform a "Dark DNA Analysis" Report.
+      
+      Output strictly in Markdown with the following structure:
+
+      ### 1. Brand Archetype & Shadow
+      Identify the surface archetype (e.g., The Ruler, The Caregiver) and its 'Shadow Self' (the hidden psychological hook we can exploit).
+
+      ### 2. Tonal Map
+      **Current Tone:** (Describe their likely current vibe)
+      **Dark DNA Tone:** (Prescribe the aggressive/authoritative tone needed for dominance)
+
+      ### 3. Competitive Gap Matrix
+      Identify 3 psychological voids in this market that competitors are ignoring. (e.g. "Competitors sell features; you must sell Status").
+
+      Tone of voice: Highly strategic, "War Room" consultant style.
+    `;
+
+    const response: GenerateContentResponse = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+    });
+
+    return response.text || "Analysis failed.";
+  } catch (error) {
+    console.error("Dark DNA Analysis Error", error);
+    return "Error generating analysis.";
+  }
+};
+
 // --- NEW MODULES ---
 
 export const generateSpeech = async (text: string): Promise<string | null> => {

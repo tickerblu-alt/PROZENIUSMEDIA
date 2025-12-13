@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Camera, Upload, Users, Award, Globe, Zap, RotateCcw, Loader2, Linkedin, Twitter } from 'lucide-react';
+import { Camera, Upload, Users, Award, Globe, RotateCcw, Loader2, Linkedin, Twitter } from 'lucide-react';
 import { getImageFromDB, saveImageToDB, clearImageFromDB } from '../utils/imageDB';
+import { ASSETS } from '../utils/assetsConfig';
 
 interface TeamMember {
   id: number;
@@ -73,12 +74,19 @@ const Team: React.FC = () => {
   const [members, setMembers] = useState<TeamMember[]>(DEFAULT_MEMBERS);
   const [isTeamLoading, setIsTeamLoading] = useState(true);
 
-  // Load images from IndexedDB on mount
+  // Load images from Config or DB
   useEffect(() => {
     const loadImages = async () => {
         const updatedMembers = await Promise.all(DEFAULT_MEMBERS.map(async (m) => {
+            // 1. Try DB first (User local override)
             const savedImage = await getImageFromDB(`team_member_${m.id}`);
-            return savedImage ? { ...m, image: savedImage } : m;
+            if (savedImage) return { ...m, image: savedImage };
+            
+            // 2. Try Config Asset (Deployment Hardcode)
+            const configImage = ASSETS.team[m.id as keyof typeof ASSETS.team];
+            if (configImage) return { ...m, image: configImage };
+
+            return m;
         }));
         setMembers(updatedMembers);
         setIsTeamLoading(false);

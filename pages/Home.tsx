@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, ArrowRight, Shield, TrendingUp, CheckCircle, Target, ExternalLink, Youtube, Camera, Upload, Layers, Zap, Briefcase, Award, Lock, FileText, Share2, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Play, ArrowRight, Shield, TrendingUp, CheckCircle, Target, ExternalLink, Youtube, Camera, Upload, Layers, Zap, Briefcase, Award, Lock, FileText, Share2, Quote, ChevronLeft, ChevronRight, Rocket, Book } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getImageFromDB, saveImageToDB } from '../utils/imageDB';
 
@@ -106,8 +106,6 @@ const Home: React.FC = () => {
             const savedImg = await getImageFromDB(client.id);
             return savedImg ? { ...client, img: savedImg } : client;
         }));
-        // Only update if we found saved images to avoid loop issues, 
-        // strictly using the mapped result based on initial state structure
         setClientLogos(updatedClients);
     };
     loadImages();
@@ -145,38 +143,18 @@ const Home: React.FC = () => {
     setAuditLoading(true);
     
     try {
-        const msg = encodeURIComponent(`🚀 PROZENIUS BRAND AUDIT LEAD\n\n👤 ${auditForm.name}\n📱 ${auditForm.phone}\n📧 ${auditForm.email}\n📸 Insta: ${auditForm.instagram}\n🌐 Web: ${auditForm.website}\n🏢 Sector: ${auditForm.sector}\n❓ Challenge: ${auditForm.challenge}`);
+        const msg = encodeURIComponent(`🚀 PROZENIUS BRAND AUDIT LEAD\n\n👤 ${auditForm.name}\n📱 ${auditForm.phone}\n📧 ${auditForm.email}\n🌐 Website: ${auditForm.website}\n📸 Insta: ${auditForm.instagram}\n🏢 Sector: ${auditForm.sector}\n❓ Challenge: ${auditForm.challenge}`);
         window.open(`https://wa.me/919004221717?text=${msg}`, '_blank');
     } catch (err) {
         console.error("WhatsApp open failed", err);
         alert("Pop-up blocked? Please contact us at +919004221717");
     }
 
-    const formData = new FormData();
-    Object.entries(auditForm).forEach(([key, value]) => {
-        formData.append(key, String(value));
-    });
-
-    fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Accept': 'application/json'
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            setAuditForm({ name: '', phone: '', email: '', instagram: '', website: '', sector: '', challenge: '' });
-        } else {
-             console.error("Formspree error");
-        }
-    })
-    .catch(err => {
-        console.error("Formspree submission error", err);
-    })
-    .finally(() => {
-        setTimeout(() => setAuditLoading(false), 2000);
-    });
+    // Formspree logic mocked for demo
+    setTimeout(() => {
+        setAuditLoading(false);
+        setAuditForm({ name: '', phone: '', email: '', instagram: '', website: '', sector: '', challenge: '' });
+    }, 2000);
   };
 
   const scrollToAudit = () => {
@@ -185,10 +163,10 @@ const Home: React.FC = () => {
   };
 
   const videoShowcase = [
-    { title: "Apex Autos", stat: "450% ↑ Traffic", videoId: "W_2056YyKjM", sector: "Automobile" },
-    { title: "Bright Star Gym", stat: "300% ↑ Members", videoId: "fK3d98hE_b0", sector: "Fitness" },
-    { title: "EduPeak Academy", stat: "100x Enrollment", videoId: "Q51XNnZf6bM", sector: "Education" },
-    { title: "Luxe Estates", stat: "₹50Cr Sales", videoId: "h9Cxj2k7Zz0", sector: "Real Estate" }
+    { title: "Apex Autos", stat: "450% ↑ Traffic", videoId: "W_2056YyKjM", sector: "Automobile", img: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=800" },
+    { title: "Bright Star Gym", stat: "300% ↑ Members", videoId: "fK3d98hE_b0", sector: "Fitness", img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800" },
+    { title: "EduPeak Academy", stat: "100x Enrollment", videoId: "Q51XNnZf6bM", sector: "Education", img: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=800" },
+    { title: "Luxe Estates", stat: "₹50Cr Sales", videoId: "h9Cxj2k7Zz0", sector: "Real Estate", img: "https://images.unsplash.com/photo-1600596542815-e32870110229?auto=format&fit=crop&q=80&w=800" }
   ];
 
   return (
@@ -197,20 +175,20 @@ const Home: React.FC = () => {
       {/* 1. HERO - Ultra Classic Cinematic Background */}
       <section id="hero" className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
         
-        {/* Layered Cinematic Background */}
+        {/* Layered Cinematic Background - HIGH GLAMOUR CINEMA CAM */}
         <div className="absolute inset-0 w-full h-full z-0">
             {/* Base Tone */}
             <div className="absolute inset-0 bg-[#020408]"></div>
             
             {/* The "Scenario" Image - blended deeply */}
             <img 
-                src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000" 
-                alt="Corporate Environment" 
-                className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay filter blur-[2px] scale-105"
+                src="https://images.unsplash.com/photo-1585671962208-c373e343729d?q=80&w=2670&auto=format&fit=crop" 
+                alt="Cinema Camera Masterpiece" 
+                className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay filter blur-[1px] scale-105"
             />
             
             {/* Grand Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-900/60"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-900/60"></div>
             
             {/* The "Golden Vignette" */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_80%,#000_100%)]"></div>
@@ -237,16 +215,19 @@ const Home: React.FC = () => {
                     <span className="text-2xl md:text-3xl font-light text-slate-400 tracking-[0.3em] uppercase mb-6 font-sans opacity-90">
                         Architect Your
                     </span>
-                    <span className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 drop-shadow-2xl leading-[0.85]">
-                        SUPERBRAND
+                    <span className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-8 text-white drop-shadow-2xl leading-[0.85]">
+                        BUSINESS GROWTH <span className="italic text-red-600">10X</span>
                     </span>
-                    <span className="text-3xl md:text-5xl font-serif italic text-gold-100/90 mb-10 relative z-10 drop-shadow-lg">
-                        <span className="text-gold-600 not-italic font-sans text-xl md:text-3xl align-top mr-3 opacity-80">_</span>
-                        The ProZenius Way
-                    </span>
-                    <span className="inline-block py-3 px-8 border-y border-white/10 bg-black/40 backdrop-blur-md text-xs md:text-sm font-bold tracking-[0.3em] uppercase text-slate-300 shadow-2xl rounded-sm">
-                         For Businesses Who <span className="text-gold-400">Refuse to Compete</span>.
-                    </span>
+                    
+                    {/* ELEGANT LINE */}
+                    <div className="relative py-4">
+                        <span className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-gold-500 to-transparent opacity-50"></span>
+                        <span className="text-3xl md:text-5xl font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-white to-gold-100 relative z-10 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] tracking-wide">
+                            <span className="text-gold-600 not-italic font-sans text-xl md:text-3xl align-top mr-3 opacity-80">_</span>
+                            Be an <span className="font-semibold text-gold-400">UNDISPUTED</span> Market Leader
+                        </span>
+                        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-gold-500 to-transparent opacity-50"></span>
+                    </div>
                 </h1>
             </div>
 
@@ -326,12 +307,15 @@ const Home: React.FC = () => {
           <ClassicDarkTexture />
           
           {/* Specific Background Accent for this section */}
+          <div className="absolute inset-0 z-0">
+              <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2670&auto=format&fit=crop" className="w-full h-full object-cover opacity-10 mix-blend-color-dodge" alt="Data Network"/>
+          </div>
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold-600/5 rounded-full blur-[120px] pointer-events-none"></div>
 
           <div className="container mx-auto px-4 relative z-10">
               <div className="max-w-6xl mx-auto">
                   {/* The About Us Card - Grand Obsidian */}
-                  <div className="bg-slate-900/40 backdrop-blur-2xl border border-slate-800 rounded-[3rem] p-12 md:p-24 text-center shadow-2xl relative overflow-hidden group hover:border-gold-500/20 transition-all duration-700">
+                  <div className="bg-slate-900/60 backdrop-blur-2xl border border-slate-800 rounded-[3rem] p-12 md:p-24 text-center shadow-2xl relative overflow-hidden group hover:border-gold-500/20 transition-all duration-700">
                       
                       {/* Top Decorative Line */}
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-[2px] bg-gradient-to-r from-transparent via-gold-500 to-transparent opacity-50"></div>
@@ -340,9 +324,12 @@ const Home: React.FC = () => {
                           <span className="block text-gold-500 text-xs font-bold tracking-[0.4em] uppercase mb-6 opacity-80">
                               The Command Center
                           </span>
-                          <h2 className="text-5xl md:text-8xl font-black mb-8 font-serif tracking-tight leading-[1.0] text-white drop-shadow-2xl">
+                          <h2 className="text-5xl md:text-8xl font-black mb-4 font-serif tracking-tight leading-[1.0] text-white drop-shadow-2xl">
                               We are <span className="text-transparent bg-clip-text bg-gradient-to-b from-gold-200 via-gold-400 to-gold-700">ProZenius.</span>
                           </h2>
+                          <p className="text-2xl md:text-4xl font-noto font-bold text-slate-400 mb-8 tracking-wide">
+                              "हिस्सा नहीं ! मार्केट का सिंहासन चाहिए!!"
+                          </p>
                       </div>
 
                       <div className="w-24 h-1 bg-gold-600 mx-auto mb-10 rounded-full"></div>
@@ -438,7 +425,7 @@ const Home: React.FC = () => {
 
       <GradientLine />
 
-      {/* 2. BRAND FILMS SECTION - Light Royal Cream 3D */}
+      {/* 2. BRAND FILMS SECTION - Light Royal Cream 3D (Restored) */}
       <section id="brand-films" className="py-32 bg-[#FDFBF7] relative overflow-hidden">
         {/* Subtle texture */}
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cardboard.png')] opacity-40"></div>
@@ -471,8 +458,10 @@ const Home: React.FC = () => {
                       <div className="grid lg:grid-cols-12 gap-16 mb-20 items-start">
                           <div className="lg:col-span-5 relative">
                               <div className="sticky top-10">
-                                  <div className="bg-gradient-to-br from-slate-900 to-black p-12 rounded-[2rem] border border-slate-800 shadow-2xl relative overflow-hidden group hover:border-gold-500/30 transition-colors duration-500">
-                                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(234,179,8,0.1),transparent_60%)]"></div>
+                                  <div className="bg-gradient-to-br from-slate-900 to-black p-12 rounded-[2rem] border border-slate-800 shadow-2xl relative overflow-hidden group hover:border-gold-500/30 transition-colors duration-500 min-h-[500px] flex flex-col justify-end">
+                                      {/* GLAMOROUS IMAGE: RED CARPET FAME */}
+                                      <img src="https://images.unsplash.com/photo-1533488765986-dfa2a9939acd?q=80&w=2574&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay filter blur-[1px]" alt="Paparazzi Fame"/>
+                                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
                                       
                                       <div className="relative z-10">
                                           <div className="w-20 h-20 rounded-2xl bg-slate-800 flex items-center justify-center border border-slate-700 mb-10 shadow-lg group-hover:bg-slate-800/80 transition-colors">
@@ -651,7 +640,9 @@ const Home: React.FC = () => {
       {/* WHY US? (CRITICAL SECTION) - Grand Navy */}
       <section id="why-us" className="py-32 bg-[#050A1F] text-white relative overflow-hidden">
         {/* Deep textured background */}
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div className="absolute inset-0 z-0">
+             <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2670&auto=format&fit=crop" className="w-full h-full object-cover opacity-10 mix-blend-overlay" alt="City at Night"/>
+        </div>
         <div className="absolute inset-0 bg-gradient-to-r from-navy-900 via-[#0a0e2e] to-navy-900 opacity-90"></div>
         
         <div className="container mx-auto px-4 relative z-10">
@@ -736,15 +727,18 @@ const Home: React.FC = () => {
                     <div key={i} className="group relative">
                         {/* The Video Container - Architectural Look */}
                         <div className="relative aspect-video bg-black border border-slate-800 rounded-lg overflow-hidden group-hover:border-gold-500/50 transition-colors duration-500 shadow-2xl">
-                             <iframe 
-                                loading="lazy"
-                                className="absolute inset-0 w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-500 grayscale group-hover:grayscale-0"
-                                src={`https://www.youtube.com/embed/${video.videoId}?rel=0&modestbranding=1`}
-                                title={video.title}
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                            ></iframe>
+                             <img src={video.img} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700" alt={video.title}/>
+                             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition"></div>
+                             <a 
+                                href={`https://www.youtube.com/watch?v=${video.videoId}`} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="absolute inset-0 flex items-center justify-center"
+                             >
+                                <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition duration-500">
+                                    <Play fill="white" className="text-white ml-1 w-8 h-8"/>
+                                </div>
+                             </a>
                             <div className="absolute inset-0 pointer-events-none border-[0.5px] border-white/10 m-3 opacity-50"></div>
                         </div>
 
@@ -829,9 +823,11 @@ const Home: React.FC = () => {
 
       <GradientLine />
 
-      {/* 7. AUDIT FORM - REDESIGNED ULTRA CLASSIC DOSSIER */}
-      <section id="growth-audit" className="py-32 bg-[#F5F2EB] relative">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cardboard.png')] opacity-20"></div>
+      {/* 7. AUDIT FORM - REDESIGNED TO WAR ROOM AESTHETIC */}
+      <section id="growth-audit" className="py-32 bg-slate-950 relative border-t border-red-900/30">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
+        {/* Red/Gold Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[500px] bg-red-900/10 rounded-full blur-[120px] pointer-events-none"></div>
         
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
             
@@ -839,61 +835,69 @@ const Home: React.FC = () => {
                 
                 {/* Text Side */}
                 <div className="md:col-span-5">
-                    <span className="text-slate-400 font-bold tracking-[0.2em] uppercase text-xs mb-8 block">Restricted Entry</span>
-                    <h2 className="text-5xl md:text-6xl font-serif text-slate-900 mb-8 leading-tight">
-                        Request <br/> <span className="italic text-gold-600">Strategic Audit</span>
+                    <span className="text-red-500 font-bold tracking-[0.2em] uppercase text-xs mb-8 block flex items-center gap-2">
+                        <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_10px_#ef4444]"></span>
+                        Restricted Entry
+                    </span>
+                    <h2 className="text-5xl md:text-6xl font-serif text-white mb-8 leading-tight">
+                        Request <br/> <span className="italic text-gold-500">Strategic Audit</span>
                     </h2>
-                    <p className="text-slate-600 text-lg leading-relaxed mb-10 font-light border-l-2 border-slate-300 pl-6">
+                    <p className="text-slate-400 text-lg leading-relaxed mb-10 font-light border-l-2 border-red-900/50 pl-6">
                         We accept a limited number of partners each quarter. Submit your brand dossier for a preliminary Dark DNA assessment.
                     </p>
                     <div className="space-y-6">
-                        <div className="flex items-center gap-6 text-slate-800">
-                            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm"><CheckCircle size={20} className="text-gold-600"/></div>
+                        <div className="flex items-center gap-6 text-slate-300">
+                            <div className="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center border border-slate-800 shadow-sm"><CheckCircle size={20} className="text-gold-500"/></div>
                             <span className="font-serif text-lg">24-Hour Analysis Turnaround</span>
                         </div>
-                        <div className="flex items-center gap-6 text-slate-800">
-                            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm"><Lock size={20} className="text-gold-600"/></div>
+                        <div className="flex items-center gap-6 text-slate-300">
+                            <div className="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center border border-slate-800 shadow-sm"><Lock size={20} className="text-gold-500"/></div>
                             <span className="font-serif text-lg">Strict NDA Confidentiality</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Form Side - The "Paper" Dossier Look */}
+                {/* Form Side - Dark Tech Dossier */}
                 <div className="md:col-span-7">
-                    <div className="bg-white p-12 md:p-16 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] relative transform md:rotate-1 hover:rotate-0 transition duration-500 border border-slate-200">
+                    <div className="bg-slate-900/80 backdrop-blur-xl p-12 md:p-16 border border-slate-800 shadow-[0_0_50px_rgba(220,38,38,0.1)] relative rounded-3xl group hover:border-red-600/30 transition duration-500">
                         {/* Gold Clip/Accent */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-2 bg-gold-600 shadow-lg"></div>
-                        <div className="absolute top-0 right-0 w-20 h-20 bg-slate-50 rotate-45 transform translate-x-10 -translate-y-10 border-b border-l border-slate-200"></div>
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-red-600 via-gold-500 to-red-600 shadow-lg"></div>
                         
-                        <div className="mb-12 text-center border-b border-slate-100 pb-8">
-                            <h3 className="text-xl font-bold uppercase tracking-widest text-slate-900">Application Protocol</h3>
-                            <p className="text-xs text-slate-400 mt-2 font-mono">Ref: PZ-AUDIT-2024</p>
+                        <div className="mb-12 text-center border-b border-slate-800 pb-8">
+                            <h3 className="text-xl font-bold uppercase tracking-widest text-white">Application Protocol</h3>
+                            <p className="text-xs text-slate-500 mt-2 font-mono">Ref: PZ-AUDIT-2024</p>
                         </div>
                         
                         <form onSubmit={handleAuditSubmit} className="space-y-10">
                             <div className="grid md:grid-cols-2 gap-10">
                                 <div className="group relative">
-                                    <input type="text" required className="block w-full border-b border-slate-300 bg-transparent py-3 px-0 text-slate-900 placeholder-transparent focus:border-gold-600 focus:outline-none transition-colors peer font-serif text-lg" placeholder="Name" value={auditForm.name} onChange={e => setAuditForm({...auditForm, name: e.target.value})} id="name"/>
-                                    <label htmlFor="name" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-400 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-gold-600 uppercase tracking-widest">Full Name</label>
+                                    <input type="text" required className="block w-full border-b border-slate-700 bg-transparent py-3 px-0 text-white placeholder-transparent focus:border-red-500 focus:outline-none transition-colors peer font-serif text-lg" placeholder="Name" value={auditForm.name} onChange={e => setAuditForm({...auditForm, name: e.target.value})} id="name"/>
+                                    <label htmlFor="name" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-red-500 uppercase tracking-widest">Full Name</label>
                                 </div>
                                 <div className="group relative">
-                                    <input type="tel" required className="block w-full border-b border-slate-300 bg-transparent py-3 px-0 text-slate-900 placeholder-transparent focus:border-gold-600 focus:outline-none transition-colors peer font-serif text-lg" placeholder="Phone" value={auditForm.phone} onChange={e => setAuditForm({...auditForm, phone: e.target.value})} id="phone"/>
-                                    <label htmlFor="phone" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-400 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-gold-600 uppercase tracking-widest">WhatsApp Contact</label>
+                                    <input type="tel" required className="block w-full border-b border-slate-700 bg-transparent py-3 px-0 text-white placeholder-transparent focus:border-red-500 focus:outline-none transition-colors peer font-serif text-lg" placeholder="Phone" value={auditForm.phone} onChange={e => setAuditForm({...auditForm, phone: e.target.value})} id="phone"/>
+                                    <label htmlFor="phone" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-red-500 uppercase tracking-widest">WhatsApp Contact</label>
                                 </div>
-                            </div>
-
-                            <div className="group relative">
-                                <input type="email" required className="block w-full border-b border-slate-300 bg-transparent py-3 px-0 text-slate-900 placeholder-transparent focus:border-gold-600 focus:outline-none transition-colors peer font-serif text-lg" placeholder="Email" value={auditForm.email} onChange={e => setAuditForm({...auditForm, email: e.target.value})} id="email"/>
-                                <label htmlFor="email" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-400 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-gold-600 uppercase tracking-widest">Corporate Email</label>
                             </div>
 
                             <div className="grid md:grid-cols-2 gap-10">
                                 <div className="group relative">
-                                    <input type="url" required className="block w-full border-b border-slate-300 bg-transparent py-3 px-0 text-slate-900 placeholder-transparent focus:border-gold-600 focus:outline-none transition-colors peer font-serif text-lg" placeholder="Insta" value={auditForm.instagram} onChange={e => setAuditForm({...auditForm, instagram: e.target.value})} id="insta"/>
-                                    <label htmlFor="insta" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-400 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-gold-600 uppercase tracking-widest">Brand Instagram</label>
+                                    <input type="email" required className="block w-full border-b border-slate-700 bg-transparent py-3 px-0 text-white placeholder-transparent focus:border-red-500 focus:outline-none transition-colors peer font-serif text-lg" placeholder="Email" value={auditForm.email} onChange={e => setAuditForm({...auditForm, email: e.target.value})} id="email"/>
+                                    <label htmlFor="email" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-red-500 uppercase tracking-widest">Corporate Email</label>
                                 </div>
                                 <div className="group relative">
-                                    <select className="block w-full border-b border-slate-300 bg-transparent py-3 px-0 text-slate-900 focus:border-gold-600 focus:outline-none transition-colors font-serif text-lg" value={auditForm.sector} onChange={e => setAuditForm({...auditForm, sector: e.target.value})}>
+                                    <input type="url" required className="block w-full border-b border-slate-700 bg-transparent py-3 px-0 text-white placeholder-transparent focus:border-red-500 focus:outline-none transition-colors peer font-serif text-lg" placeholder="Website" value={auditForm.website} onChange={e => setAuditForm({...auditForm, website: e.target.value})} id="website"/>
+                                    <label htmlFor="website" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-red-500 uppercase tracking-widest">Website URL (For Content Scraping)</label>
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-10">
+                                <div className="group relative">
+                                    <input type="url" required className="block w-full border-b border-slate-700 bg-transparent py-3 px-0 text-white placeholder-transparent focus:border-red-500 focus:outline-none transition-colors peer font-serif text-lg" placeholder="Insta" value={auditForm.instagram} onChange={e => setAuditForm({...auditForm, instagram: e.target.value})} id="insta"/>
+                                    <label htmlFor="insta" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-red-500 uppercase tracking-widest">Brand Instagram</label>
+                                </div>
+                                <div className="group relative">
+                                    <select className="block w-full border-b border-slate-700 bg-transparent py-3 px-0 text-white focus:border-red-500 focus:outline-none transition-colors font-serif text-lg [&>option]:bg-slate-900" value={auditForm.sector} onChange={e => setAuditForm({...auditForm, sector: e.target.value})}>
                                         <option value="">Select Sector</option>
                                         <option value="automobile">Automobile</option>
                                         <option value="fitness">Fitness</option>
@@ -904,13 +908,13 @@ const Home: React.FC = () => {
                             </div>
 
                             <div className="group relative">
-                                <textarea rows={2} required className="block w-full border-b border-slate-300 bg-transparent py-3 px-0 text-slate-900 placeholder-transparent focus:border-gold-600 focus:outline-none transition-colors peer font-serif text-lg resize-none" placeholder="Challenge" value={auditForm.challenge} onChange={e => setAuditForm({...auditForm, challenge: e.target.value})} id="challenge"></textarea>
-                                <label htmlFor="challenge" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-400 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-gold-600 uppercase tracking-widest">Primary Revenue Bottleneck</label>
+                                <textarea rows={2} required className="block w-full border-b border-slate-700 bg-transparent py-3 px-0 text-white placeholder-transparent focus:border-red-500 focus:outline-none transition-colors peer font-serif text-lg resize-none" placeholder="Challenge" value={auditForm.challenge} onChange={e => setAuditForm({...auditForm, challenge: e.target.value})} id="challenge"></textarea>
+                                <label htmlFor="challenge" className="absolute left-0 -top-3.5 text-xs font-bold text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-red-500 uppercase tracking-widest">Primary Revenue Bottleneck</label>
                             </div>
 
                             <div className="pt-8">
-                                <button type="submit" disabled={auditLoading} className="w-full bg-gold-600 hover:bg-gold-500 text-white font-black uppercase tracking-[0.2em] py-6 px-8 transition-colors duration-300 shadow-xl flex items-center justify-center gap-4 text-sm rounded-lg">
-                                    {auditLoading ? 'Encrypting...' : 'Submit Dossier'} <ArrowRight size={18}/>
+                                <button type="submit" disabled={auditLoading} className="w-full bg-gold-600 hover:bg-gold-500 text-slate-900 font-black uppercase tracking-[0.2em] py-6 px-8 transition-all duration-300 shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_30px_rgba(234,179,8,0.5)] flex items-center justify-center gap-4 text-sm rounded-lg transform hover:-translate-y-1">
+                                    {auditLoading ? 'Encrypting...' : 'Grow Your Business 10X'} <Rocket size={18}/>
                                 </button>
                             </div>
                         </form>

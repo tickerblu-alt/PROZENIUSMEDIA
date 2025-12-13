@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Factory, MapPin, Database, Shield, ArrowRight, Lock, CheckCircle } from 'lucide-react';
+import { Factory, MapPin, Database, Shield, ArrowRight, Lock, CheckCircle, ChevronRight, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const InsightsMSME: React.FC = () => {
@@ -11,75 +11,102 @@ const InsightsMSME: React.FC = () => {
   };
   
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
-      {/* Stable Hero */}
-      <div className="bg-slate-900 text-white pt-20 pb-24 relative overflow-hidden border-b-8 border-gold-500">
-         <div className="container mx-auto px-4 relative z-10 text-center">
-             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1 rounded-full border border-white/20 mb-6">
-                 <Factory size={16} className="text-gold-400" />
-                 <span className="text-xs font-bold uppercase tracking-wider text-gold-100">For MSME Owners</span>
-             </div>
-             <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
-                 Build an Empire <br/><span className="text-gold-500">That Lasts.</span>
-             </h1>
-             <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-10">
-                 Exclusive frameworks for digital transformation and local market dominance. Proven by 824 business owners.
-             </p>
-             <div className="text-gold-500 font-bold text-lg inline-flex items-center gap-2 animate-bounce cursor-default select-none">
-                 Strategies Below <ArrowRight className="rotate-90"/>
+    <div className="min-h-screen bg-[#050505] font-sans text-slate-300 selection:bg-gold-500 selection:text-black">
+      
+      {/* 1. HERO - LEGACY TRACK */}
+      <div className="pt-32 pb-24 relative overflow-hidden border-b border-gold-900/30">
+         {/* Industrial Background */}
+         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-gold-900/20 via-[#050505] to-[#050505]"></div>
+         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+         
+         <div className="container mx-auto px-4 relative z-10">
+             <div className="max-w-4xl mx-auto text-center">
+                 <div className="inline-flex items-center gap-2 bg-gold-950/50 border border-gold-500/30 backdrop-blur-md px-4 py-1.5 rounded-sm mb-8 shadow-[0_0_15px_rgba(234,179,8,0.2)]">
+                     <Factory size={14} className="text-gold-500" />
+                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold-400">Legacy Track: Enterprise</span>
+                 </div>
+                 
+                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white mb-8 leading-[0.9] tracking-tighter">
+                     BUILD AN EMPIRE <br/>
+                     <span className="text-transparent bg-clip-text bg-gradient-to-b from-gold-300 to-gold-700 italic">THAT LASTS</span>
+                 </h1>
+                 
+                 <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
+                     Operational blueprints for <strong className="text-white">Digital Transformation</strong>, <strong className="text-white">Local Dominance</strong>, and <strong className="text-white">Generational Wealth</strong>.
+                 </p>
+                 
+                 <div className="flex justify-center gap-6">
+                     <button onClick={() => document.getElementById('blueprints')?.scrollIntoView({behavior:'smooth'})} className="bg-gold-600 hover:bg-gold-500 text-black px-8 py-4 rounded-sm font-black uppercase tracking-widest text-sm shadow-[0_0_30px_rgba(234,179,8,0.3)] transition-all hover:scale-105 flex items-center gap-3 border border-gold-400">
+                         View Blueprints <ArrowRight size={16}/>
+                     </button>
+                 </div>
              </div>
          </div>
       </div>
 
-      {/* Frameworks List */}
-      <div id="frameworks" className="container mx-auto px-4 py-20">
-          <div className="grid gap-8 max-w-5xl mx-auto">
+      {/* 2. BLUEPRINTS GRID - INDUSTRIAL CARDS */}
+      <div id="blueprints" className="container mx-auto px-4 py-24 relative z-10">
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
               {[
                   {
                       id: 'digital-transform',
-                      title: "Digital Transformation Dark Pathway™",
-                      desc: "How MSMEs can modernize operations without disrupting cash flow. Step-by-step guide to automating sales, marketing, and customer acquisition using AI tools that cost less than one employee's salary.",
-                      metric: "Avg 500% ROI for offline businesses.",
-                      icon: <Database className="text-blue-600" />
+                      title: "Digital Transformation",
+                      desc: "How MSMEs can modernize operations without disrupting cash flow. Step-by-step guide to automating sales and customer acquisition using AI tools.",
+                      metric: "500% ROI for offline businesses.",
+                      icon: <Database className="text-blue-400" />,
+                      color: "border-blue-900 hover:border-blue-500"
                   },
                   {
                       id: 'local-dominance',
-                      title: "Local Market Neuro-Dominance Playbook™",
-                      desc: "31 hyper-local advertising formulas that make your MSME the default choice within 5 km radius. Includes 'dark reputation' tactics that build trust faster than traditional branding.",
+                      title: "Local Market Monopoly",
+                      desc: "31 hyper-local advertising formulas that make your MSME the default choice within 5 km radius. 'Dark reputation' tactics that build trust instantly.",
                       metric: "Dominates 5km radius in 90 days.",
-                      icon: <MapPin className="text-red-600" />
+                      icon: <MapPin className="text-red-500" />,
+                      color: "border-red-900 hover:border-red-500"
                   },
                   {
                       id: 'budget-guerrilla',
-                      title: "Budget Guerrilla Operations Manual™",
+                      title: "Budget Guerrilla Ops",
                       desc: "Launch products, run promotions, and steal market share from larger competitors using less than ₹99,999/month. Real examples from 55+ Indian MSMEs.",
-                      metric: "Proven by 55+ Indian MSME Case Studies.",
-                      icon: <Shield className="text-green-600" />
+                      metric: "Verified by 55+ Case Studies.",
+                      icon: <Shield className="text-green-500" />,
+                      color: "border-green-900 hover:border-green-500"
                   },
                   {
                       id: 'competitor-scan',
-                      title: "Competitor Vulnerability Scanner™",
-                      desc: "Real-time tracking of local competitor weaknesses—pricing gaps, service failures, customer complaints—and automated response strategies to capture their market share within 72 hours.",
+                      title: "Competitor Scanner",
+                      desc: "Real-time tracking of local competitor weaknesses—pricing gaps, service failures—and automated strategies to capture their market share within 72 hours.",
                       metric: "Capture share within 72 hours.",
-                      icon: <CheckCircle className="text-purple-600" />
+                      icon: <CheckCircle className="text-purple-400" />,
+                      color: "border-purple-900 hover:border-purple-500"
                   }
               ].map((f, i) => (
-                  <div key={i} className="bg-white p-8 rounded-2xl shadow-md border border-slate-200 hover:border-gold-500 transition group relative">
-                      <div className="flex flex-col md:flex-row gap-6">
-                          <div className="bg-slate-100 w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-slate-200 transition">
-                              {React.cloneElement(f.icon as React.ReactElement<any>, { size: 32 })}
+                  <div key={i} className={`bg-slate-900 border ${f.color} p-8 relative group overflow-hidden transition-all duration-500 hover:-translate-y-1`}>
+                      {/* Decorative Corner */}
+                      <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-slate-700 group-hover:border-white transition-colors"></div>
+                      
+                      <div className="relative z-10">
+                          <div className="flex justify-between items-start mb-8">
+                              <div className="w-14 h-14 bg-black border border-slate-800 flex items-center justify-center shadow-lg">
+                                  {React.cloneElement(f.icon as React.ReactElement<any>, { size: 28 })}
+                              </div>
+                              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 border-b border-slate-800 pb-1">
+                                  File #MSME-{100+i}
+                              </div>
                           </div>
-                          <div>
-                              <h3 className="text-2xl font-black text-slate-900 mb-3">{f.title}</h3>
-                              <p className="text-slate-600 mb-4 leading-relaxed">{f.desc}</p>
-                              <div className="bg-gold-50 text-gold-800 text-sm font-bold px-4 py-2 rounded border border-gold-200 inline-block mb-6">
-                                  Result: {f.metric}
+                          
+                          <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-gold-400 transition-colors">{f.title}</h3>
+                          <p className="text-slate-400 text-sm leading-relaxed mb-8 border-l-2 border-slate-800 pl-4 font-light">
+                              {f.desc}
+                          </p>
+                          
+                          <div className="flex items-center justify-between pt-6 border-t border-slate-800">
+                              <div className="text-xs font-bold text-slate-300 flex items-center gap-2">
+                                  <Briefcase size={12} className="text-gold-500"/> {f.metric}
                               </div>
-                              <div className="flex items-center gap-4">
-                                  <Link to="/contact" className="text-slate-900 font-bold hover:text-gold-600 underline decoration-gold-500 decoration-2 underline-offset-4">Find your business's DARK DNA</Link>
-                                  <span className="text-slate-300">|</span>
-                                  <Link to="/case-studies" className="text-slate-500 text-sm hover:text-slate-800">View Transformation Stories</Link>
-                              </div>
+                              <Link to={`/insights/framework/${f.id}`} className="text-white hover:text-gold-500 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all">
+                                  Open File <ChevronRight size={12}/>
+                              </Link>
                           </div>
                       </div>
                   </div>
@@ -87,35 +114,50 @@ const InsightsMSME: React.FC = () => {
           </div>
       </div>
 
-      {/* Unlock Gate */}
-      <div className="bg-slate-200 py-20 border-t border-slate-300">
-          <div className="container mx-auto px-4 text-center">
-              <div className="bg-white p-10 rounded-2xl max-w-3xl mx-auto shadow-xl border border-slate-300">
-                  <h2 className="text-3xl font-black text-slate-900 mb-4">Access The MSME Vault</h2>
-                  <p className="text-slate-600 mb-8">Join 824 Business Owners. Free for 2 days, then ₹1999/month.</p>
+      {/* 3. UNLOCK GATE - THE ARCHIVE */}
+      <div className="py-24 border-t border-slate-900 bg-black">
+          <div className="container mx-auto px-4">
+              <div className="max-w-3xl mx-auto bg-slate-900 border-2 border-gold-900/30 p-12 text-center relative shadow-2xl">
+                  {/* Decorative Rivets */}
+                  <div className="absolute top-4 left-4 w-2 h-2 rounded-full bg-slate-700"></div>
+                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-slate-700"></div>
+                  <div className="absolute bottom-4 left-4 w-2 h-2 rounded-full bg-slate-700"></div>
+                  <div className="absolute bottom-4 right-4 w-2 h-2 rounded-full bg-slate-700"></div>
                   
-                  <form className="flex flex-col md:flex-row gap-4 justify-center max-w-lg mx-auto mb-6" onSubmit={(e) => {e.preventDefault(); alert("Welcome pack sent!");}}>
-                      <input 
-                          type="email" 
-                          required
-                          placeholder="Enter business email" 
-                          className="flex-grow p-4 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-gold-500 outline-none"
-                          value={email}
-                          onChange={e => setEmail(e.target.value)}
-                      />
-                      <button type="submit" className="bg-gold-600 text-white font-bold px-8 py-4 rounded-lg hover:bg-gold-500 transition shadow-lg">
-                          Get 1 Free
-                      </button>
-                  </form>
-                  
-                  <div className="border-t border-slate-100 pt-8 mt-8">
+                  <div className="relative z-10">
+                      <div className="mb-8 flex justify-center">
+                          <div className="w-20 h-20 bg-gold-900/10 rounded-full flex items-center justify-center border border-gold-500/50">
+                              <Lock size={32} className="text-gold-500"/>
+                          </div>
+                      </div>
+                      
+                      <h2 className="text-3xl font-serif text-white mb-4">Access The MSME Archive</h2>
+                      <p className="text-slate-400 mb-10 max-w-lg mx-auto">
+                          Join 824 Business Owners. Get weekly blueprints for stability and scale. <br/>
+                          <span className="text-gold-500 font-bold">Free for 2 days, then ₹1999/month.</span>
+                      </p>
+                      
+                      <form className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto mb-8" onSubmit={(e) => {e.preventDefault(); alert("Welcome pack sent!");}}>
+                          <input 
+                              type="email" 
+                              required
+                              placeholder="Business Email" 
+                              className="flex-grow p-4 bg-black border border-slate-700 focus:border-gold-500 focus:outline-none text-white transition-colors font-serif placeholder-slate-600"
+                              value={email}
+                              onChange={e => setEmail(e.target.value)}
+                          />
+                          <button type="submit" className="bg-gold-600 hover:bg-gold-500 text-black font-bold px-8 py-4 transition shadow-lg uppercase tracking-widest text-xs whitespace-nowrap border border-gold-400">
+                              Get 1 Free
+                          </button>
+                      </form>
+                      
                       <button 
                         onClick={handleSubscribe}
-                        className="bg-gold-600 text-white w-full md:w-auto px-12 py-4 rounded-lg font-bold shadow-lg hover:bg-gold-500 transition flex items-center justify-center gap-3 mx-auto"
+                        className="w-full sm:w-auto border border-slate-700 hover:border-gold-500 text-slate-400 hover:text-white px-8 py-4 font-bold uppercase tracking-widest text-xs transition flex items-center justify-center gap-3 mx-auto"
                       >
-                         <Lock size={18} /> Subscribe Full Access (₹1999/mo)
+                         <Lock size={14} /> Subscribe Full Access (₹1999/mo)
                       </button>
-                      <p className="text-xs text-slate-400 mt-4">Secure Payment via Razorpay. GST Invoice available.</p>
+                      <p className="text-[10px] text-slate-600 mt-4 uppercase tracking-widest">GST Invoice Available • Secure Payment</p>
                   </div>
               </div>
           </div>
